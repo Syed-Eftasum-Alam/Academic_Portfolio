@@ -1,7 +1,7 @@
 💼 Personal Portfolio
 
 This is my personal portfolio website built using React, TypeScript, and Vite. It showcases my background, skills, projects, and contact information in a clean and responsive layout.
-🚀 Tech Stack
+🚀
 
     ⚛️ React – For building a fast and dynamic UI
 
@@ -42,3 +42,4 @@ This is my personal portfolio website built using React, TypeScript, and Vite. I
 📬 Feedback
 
 If you have any suggestions or spot any bugs, feel free to open an issue or reach out!
+
