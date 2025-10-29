@@ -103,53 +103,75 @@ const AboutEducation = () => {
       </div>
       
       <div className="grid md:grid-cols-1 lg:grid-cols-2 gap-6">
-        {education.map((item, index) => (
-          <div
-            key={index}
-            // Keep existing theme classes but allow inline style override for BRAC card
-            className={`p-6 ${item.theme} rounded-xl hover:shadow-lg transition-all duration-300 border`}
-            style={{
-              background: cardStyles[index]?.background, // will be undefined for non-BRAC fallback to CSS classes
-              borderColor: cardStyles[index]?.border, // override border color when computed
-            }}
-          >
-            <div className="flex items-center mb-4">
-              <div className="w-16 h-16 bg-white dark:bg-slate-800 rounded-lg shadow-md flex items-center justify-center mr-4 border border-gray-200 dark:border-gray-700">
-                <img 
-                  src={item.logo} 
-                  alt={`${item.institution} logo`}
-                  className="w-12 h-12 object-contain rounded-md"
-                  onLoad={(e) => {
-                    // call color extractor on load (if BRAC)
-                    const target = e.target as HTMLImageElement;
-                    handleImageLoad(target, index, item.institution);
-                  }}
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    target.style.display = 'none';
-                    const fallback = target.nextElementSibling as HTMLElement;
-                    if (fallback) fallback.style.display = 'flex';
-                  }}
-                />
-                <Building2 
-                  size={24} 
-                  className="text-gray-400 dark:text-gray-500 hidden" 
-                  style={{ display: 'none' }}
-                />
-              </div>
-              <div className="flex-1">
-                <div className="flex items-center mb-2">
-                  {/* Use computed icon color if available (BRAC), otherwise keep item.iconColor classes */}
-                  <Calendar size={16} className="mr-2" style={{ color: cardStyles[index]?.icon }} />
-                  <span className={`text-sm font-medium ${item.iconColor}`} style={{ color: cardStyles[index]?.icon ?? undefined }}>{item.year}</span>
+        {education.map((item, index) => {
+          const isBrac = item.institution.toLowerCase().includes('brac');
+          // Classes for BRAC card text
+          const yearClass = isBrac
+            ? 'text-sm font-medium text-black dark:text-white'
+            : `text-sm font-medium ${item.iconColor}`;
+          const degreeClass = isBrac
+            ? 'text-lg font-semibold text-black dark:text-white mb-2'
+            : 'text-lg font-semibold text-slate-800 dark:text-white mb-2';
+          const institutionClass = isBrac
+            ? 'text-black dark:text-slate-300 font-medium mb-2'
+            : 'text-slate-600 dark:text-slate-300 font-medium mb-2';
+          const descriptionClass = isBrac
+            ? 'text-black dark:text-slate-400 text-sm'
+            : 'text-slate-600 dark:text-slate-400 text-sm';
+          const yearStyle = isBrac ? undefined : { color: cardStyles[index]?.icon ?? undefined };
+          // Calendar icon color for BRAC card
+          const calendarStyle = isBrac
+            ? undefined // use Tailwind classes for color
+            : { color: cardStyles[index]?.icon };
+          return (
+            <div
+              key={index}
+              className={`p-6 ${item.theme} rounded-xl hover:shadow-lg transition-all duration-300 border`}
+              style={{
+                background: cardStyles[index]?.background,
+                borderColor: cardStyles[index]?.border,
+              }}
+            >
+              <div className="flex items-center mb-4">
+                <div className="w-16 h-16 bg-white dark:bg-slate-800 rounded-lg shadow-md flex items-center justify-center mr-4 border border-gray-200 dark:border-gray-700">
+                  <img 
+                    src={item.logo} 
+                    alt={`${item.institution} logo`}
+                    className="w-12 h-12 object-contain rounded-md"
+                    onLoad={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      handleImageLoad(target, index, item.institution);
+                    }}
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.style.display = 'none';
+                      const fallback = target.nextElementSibling as HTMLElement;
+                      if (fallback) fallback.style.display = 'flex';
+                    }}
+                  />
+                  <Building2 
+                    size={24} 
+                    className="text-gray-400 dark:text-gray-500 hidden" 
+                    style={{ display: 'none' }}
+                  />
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center mb-2">
+                    <Calendar
+                      size={16}
+                      className={`mr-2${isBrac ? ' text-black dark:text-white' : ''}`}
+                      style={calendarStyle}
+                    />
+                    <span className={yearClass} style={yearStyle}>{item.year}</span>
+                  </div>
                 </div>
               </div>
+              <h4 className={degreeClass}>{item.degree}</h4>
+              <p className={institutionClass}>{item.institution}</p>
+              <p className={descriptionClass}>{item.description}</p>
             </div>
-            <h4 className="text-lg font-semibold text-slate-800 dark:text-white mb-2">{item.degree}</h4>
-            <p className="text-slate-600 dark:text-slate-300 font-medium mb-2">{item.institution}</p>
-            <p className="text-slate-600 dark:text-slate-400 text-sm">{item.description}</p>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
